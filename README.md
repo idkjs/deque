@@ -1,3 +1,5 @@
+> **Reason wrapper for web of [art-w/deque](https://github.com/art-w/deque)** 
+
 > **[Purely Functional, Real-Time Deques with Catenation]** \[284ko postscript\] \
 > by Haim Kaplan and Robert E. Tarjan \
 > journal of the ACM 31:11-16 (1999) 1709-1723 https://doi.org/10.1145/324133.324139
