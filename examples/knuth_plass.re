@@ -248,11 +248,11 @@ let linear = words => {
   layout;
 };
 
-let whitespace = Str.regexp("[ \t\n]+");
-let words = str => Str.split(whitespace, str);
+let whitespace = Js.String.trim;
+let words = str => Js.String2.split(whitespace(str))->Obj.magic;
 
 let test = str => {
-  let ws = words(str);
+  let ws = words(str)->Array.to_list;
   for (i in 20 to 70) {
     max_width := i;
     let opt = dynamic(ws);

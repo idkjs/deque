@@ -2,6 +2,6 @@
 	"git.ignoreLimitWarning": true,
 	"ocaml.sandbox": {
 		"kind": "esy",
-		"root": "${workspaceFolder:deque}"
+		"root": "${workspaceFolder:reason-deque}"
 	}
 }

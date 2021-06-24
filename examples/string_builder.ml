@@ -121,7 +121,7 @@ module Test (Builder : S) = struct
       in
       to_string (go empty 20000)
 
-  let () = Gc.full_major ()
+  let () = ()
 
   let fibonacci =
     bench "fibonacci" @@ fun () ->
@@ -132,7 +132,7 @@ module Test (Builder : S) = struct
       in
       to_string (go (of_string "1") (of_string "0") 32)
 
-  let () = Gc.full_major ()
+  let () = ()
 end
 
 let header name =
@@ -196,7 +196,7 @@ module Test_buffer = struct
       go 20000 ;
       Buffer.contents buf
 
-  let () = Gc.full_major ()
+  let () = ()
 
   let fibonacci =
     bench "fibonacci" @@ fun () ->
@@ -215,7 +215,7 @@ module Test_buffer = struct
       go (32 + 1) ;
       Buffer.contents buf
 
-  let () = Gc.full_major ()
+  let () = ()
 
   let () =
     assert (parens_in = Test_string.parens_in) ;

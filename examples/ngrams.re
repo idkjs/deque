@@ -10,7 +10,7 @@ module Ngram_make = (N: {let size: int;}) => {
     String.init(Array.length(arr), Array.get(arr));
   };
 
-  let compare = Deque.compare(Stdlib.compare);
+  let compare = Deque.compare(compare);
 };
 
 module Ngram =
