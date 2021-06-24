@@ -1,0 +1,38 @@
+{
+  "name": "reason-rollup-template",
+  "version": "0.1.3",
+  "browser": true,
+  "main": "lib/es6/src/Dominant.bs.js",
+  "scripts": {
+    "postinstall": "esy",
+    "clean": "bsb -clean-world",
+    "build": "bsb -make-world",
+    "watch": "bsb -make-world -w",
+    "watch-packages": "watchexec -w src -i lib -e re,rei esy bsb -make-world",
+    "test": "npm run clean && npm run build && jest",
+    "dev-demo": "webpack serve"
+  },
+  "keywords": [
+    "Rescript",
+    "Reason",
+    "image",
+    "Colors"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "7.14.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "@babel/preset-env": "7.14.2",
+    "@glennsl/bs-jest": "^0.7.0",
+    "bs-platform": "^9.0.2",
+    "esy": "^0.6.10"
+  },
+  "jest": {
+    "testURL": "http://localhost/",
+    "testRegex": "Test.bs.js",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@glennsl/bs-jest|bs-platform).+\\.js$"
+    ]
+  }
+}

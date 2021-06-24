@@ -76,3 +76,5 @@ The core types and algorithms described in the paper can be found in the
 [Reflection without remorse]: https://doi.org/10.1145/2775050.2633360
 [Fast Join-trees]: https://doi.org/10.1007/11841036_18
 [Functional Link-Cut trees]: http://erikdemaine.org/papers/ConfluentTries_Algorithmica/
+
+opam switch create . ocaml-base-compiler.4.12.0 --deps-only -y opam install ocaml-lsp-server reason -y eval (opam env)
