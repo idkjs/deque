@@ -1,7 +1,7 @@
 {
   "name": "reason-deque",
   "version": "0.1.0",
-   "sources": [
+  "sources": [
     {
       "dir": "src",
       "subdirs": true
@@ -11,16 +11,22 @@
       "type": "dev"
     }
   ],
-  "package-specs": [{
-    "module": "es6",
-    "in-source": false
-  },{
-    "module": "commonjs",
-    "in-source": true
-  }],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": false
+    },
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
   "suffix": ".bs.js",
   "bs-dependencies": [],
-  "bs-dev-dependencies": ["@glennsl/bs-jest"],
-  "bsc-flags": ["-bs-super-errors"],
-  "namespace": true
+  "bs-dev-dependencies": [ "@glennsl/bs-jest" ],
+  "bsc-flags": [ "-bs-super-errors" ],
+  "warnings": {
+    "number": "-109-6-39-27-32-3-105-103-44",
+    "error": "+101"
+  }
 }

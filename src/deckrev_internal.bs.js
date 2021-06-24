@@ -3,7 +3,7 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var Pervasives = require("bs-platform/lib/js/pervasives.js");
-var Dequeue_internal$ReasonDeque = require("./dequeue_internal.bs.js");
+var Dequeue_internal = require("./dequeue_internal.bs.js");
 
 function vector_fold_right(fn, v, z) {
   if (typeof v === "number") {
@@ -48,7 +48,7 @@ function vector_fold_left(fn, z, v) {
 }
 
 function elt_out(x, t) {
-  if (Dequeue_internal$ReasonDeque.is_rev(t)) {
+  if (Dequeue_internal.is_rev(t)) {
     if (x.TAG === /* L2R */0) {
       return {
               TAG: /* R2L */1,
@@ -65,20 +65,20 @@ function elt_out(x, t) {
   }
 }
 
-var rev = Dequeue_internal$ReasonDeque.rev;
+var rev = Dequeue_internal.rev;
 
-var is_rev = Dequeue_internal$ReasonDeque.is_rev;
+var is_rev = Dequeue_internal.is_rev;
 
 function cons(x, t) {
-  return Dequeue_internal$ReasonDeque.cons(elt_out(x, t), t);
+  return Dequeue_internal.cons(elt_out(x, t), t);
 }
 
 function snoc(t, x) {
-  return Dequeue_internal$ReasonDeque.snoc(t, elt_out(x, t));
+  return Dequeue_internal.snoc(t, elt_out(x, t));
 }
 
 function opt_uncons(t) {
-  var match = Dequeue_internal$ReasonDeque.uncons(t);
+  var match = Dequeue_internal.uncons(t);
   if (match !== undefined) {
     return [
             elt_out(match[0], t),
@@ -89,7 +89,7 @@ function opt_uncons(t) {
 }
 
 function opt_unsnoc(t) {
-  var match = Dequeue_internal$ReasonDeque.unsnoc(t);
+  var match = Dequeue_internal.unsnoc(t);
   if (match !== undefined) {
     return [
             match[0],
@@ -131,15 +131,15 @@ function unsnoc(t) {
 }
 
 function single_elt(x) {
-  return Dequeue_internal$ReasonDeque.cons(x, Dequeue_internal$ReasonDeque.empty);
+  return Dequeue_internal.cons(x, Dequeue_internal.empty);
 }
 
 function triple(x, y, z) {
-  return cons(x, cons(y, Dequeue_internal$ReasonDeque.cons(z, Dequeue_internal$ReasonDeque.empty)));
+  return cons(x, cons(y, Dequeue_internal.cons(z, Dequeue_internal.empty)));
 }
 
 function pair_elt(x, y) {
-  return Dequeue_internal$ReasonDeque.cons(x, Dequeue_internal$ReasonDeque.cons(y, Dequeue_internal$ReasonDeque.empty));
+  return Dequeue_internal.cons(x, Dequeue_internal.cons(y, Dequeue_internal.empty));
 }
 
 function uncons2(t) {
@@ -164,7 +164,7 @@ function unsnoc2(t) {
 
 function two(t) {
   var match = uncons2(t);
-  if (!Dequeue_internal$ReasonDeque.is_empty(match[2])) {
+  if (!Dequeue_internal.is_empty(match[2])) {
     throw {
           RE_EXN_ID: "Assert_failure",
           _1: [
@@ -182,7 +182,7 @@ function two(t) {
 }
 
 function has1(t) {
-  if (Dequeue_internal$ReasonDeque.is_empty(t)) {
+  if (Dequeue_internal.is_empty(t)) {
     return /* Exact_0 */0;
   } else {
     return /* Lte1 */{
@@ -196,7 +196,7 @@ function to_dequeue(t) {
 }
 
 function of_dequeue(d) {
-  if (Dequeue_internal$ReasonDeque.is_empty(d)) {
+  if (Dequeue_internal.is_empty(d)) {
     return /* Exact_0 */0;
   } else {
     return /* Lte1 */{
@@ -570,7 +570,7 @@ function snoc8(t, param) {
 }
 
 var $$Buffer = {
-  empty: Dequeue_internal$ReasonDeque.empty,
+  empty: Dequeue_internal.empty,
   rev: rev,
   is_rev: is_rev,
   elt_out: elt_out,
@@ -713,103 +713,103 @@ function triple_force_rev(buf) {
     case /* Only_prefix */1 :
         return {
                 TAG: /* Only_prefix */1,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _0: Dequeue_internal.rev(buf._0)
               };
     case /* Only_green */2 :
         return {
                 TAG: /* Only_green */2,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Only_yellow */3 :
         return {
                 TAG: /* Only_yellow */3,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Only_orange */4 :
         return {
                 TAG: /* Only_orange */4,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Only_red */5 :
         return {
                 TAG: /* Only_red */5,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Left_small */6 :
         return {
                 TAG: /* Right_small */11,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._1),
-                _1: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _0: Dequeue_internal.rev(buf._1),
+                _1: Dequeue_internal.rev(buf._0)
               };
     case /* Left_green */7 :
         return {
                 TAG: /* Right_green */12,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Left_yellow */8 :
         return {
                 TAG: /* Right_yellow */13,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Left_orange */9 :
         return {
                 TAG: /* Right_orange */14,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Left_red */10 :
         return {
                 TAG: /* Right_red */15,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Right_small */11 :
         return {
                 TAG: /* Left_small */6,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._1),
-                _1: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _0: Dequeue_internal.rev(buf._1),
+                _1: Dequeue_internal.rev(buf._0)
               };
     case /* Right_green */12 :
         return {
                 TAG: /* Left_green */7,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Right_yellow */13 :
         return {
                 TAG: /* Left_yellow */8,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Right_orange */14 :
         return {
                 TAG: /* Left_orange */9,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: not_empty_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     case /* Right_red */15 :
         return {
                 TAG: /* Left_red */10,
-                _0: Dequeue_internal$ReasonDeque.rev(buf._2),
+                _0: Dequeue_internal.rev(buf._2),
                 _1: deque_rev(buf._1),
-                _2: Dequeue_internal$ReasonDeque.rev(buf._0)
+                _2: Dequeue_internal.rev(buf._0)
               };
     
   }
@@ -1122,7 +1122,7 @@ function snoc_deque(deq, x) {
 function single_triple(x) {
   return {
           TAG: /* Only_prefix */1,
-          _0: Dequeue_internal$ReasonDeque.cons(x, Dequeue_internal$ReasonDeque.empty)
+          _0: Dequeue_internal.cons(x, Dequeue_internal.empty)
         };
 }
 
@@ -1133,7 +1133,7 @@ function only_single(x) {
             _0: /* HOLE */0,
             _1: {
               TAG: /* Only_prefix */1,
-              _0: Dequeue_internal$ReasonDeque.cons(x, Dequeue_internal$ReasonDeque.empty)
+              _0: Dequeue_internal.cons(x, Dequeue_internal.empty)
             }
           }
         };
@@ -1815,10 +1815,10 @@ function left_of_pair(left, right) {
         var match$8 = extract_stored_right(s1$1, right);
         var kont = {
           TAG: /* Only_prefix */1,
-          _0: Dequeue_internal$ReasonDeque.cons({
+          _0: Dequeue_internal.cons({
                 TAG: /* L2R */0,
                 _0: match$8[0]
-              }, Dequeue_internal$ReasonDeque.empty)
+              }, Dequeue_internal.empty)
         };
         return /* Path */{
                 _0: {
@@ -1958,10 +1958,10 @@ function right_of_pair(left, right) {
         var match$8 = extract_stored_left(left, p1$1);
         var kont = {
           TAG: /* Only_prefix */1,
-          _0: Dequeue_internal$ReasonDeque.cons({
+          _0: Dequeue_internal.cons({
                 TAG: /* L2R */0,
                 _0: match$8[1]
-              }, Dequeue_internal$ReasonDeque.empty)
+              }, Dequeue_internal.empty)
         };
         return /* Path */{
                 _0: {
@@ -3228,14 +3228,14 @@ function stored_elt(x) {
   if (p.TAG === /* Stored_prefix */0) {
     return {
             TAG: /* Stored_prefix */0,
-            _0: Dequeue_internal$ReasonDeque.rev(p._0)
+            _0: Dequeue_internal.rev(p._0)
           };
   } else {
     return {
             TAG: /* Stored */1,
-            _0: Dequeue_internal$ReasonDeque.rev(p._2),
+            _0: Dequeue_internal.rev(p._2),
             _1: st_rev(p._1),
-            _2: Dequeue_internal$ReasonDeque.rev(p._0)
+            _2: Dequeue_internal.rev(p._0)
           };
   }
 }
@@ -3435,7 +3435,7 @@ function unsandwich_green(path) {
     if (left.TAG === /* Exact_6 */0) {
       var lst = left._0;
       if (right.TAG === /* Exact_6 */0) {
-        var buf = cons6(right._0, Dequeue_internal$ReasonDeque.empty);
+        var buf = cons6(right._0, Dequeue_internal.empty);
         var buf$1 = cons6(lst, buf);
         d1$2 = /* S */{
           _0: {

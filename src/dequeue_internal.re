@@ -49,56 +49,56 @@ let green_prefix_cons:
   type a. (a, buffer(a, [ | `green])) => buffer(a, [ | `yellow]) =
   (x, buf) =>
     switch (buf) {
-    | [@implicit_arity] B2(a, b) => [@implicit_arity] B3(x, a, b)
-    | [@implicit_arity] B3(a, b, c) => [@implicit_arity] B4(x, a, b, c)
+    |  B2(a, b) =>  B3(x, a, b)
+    |  B3(a, b, c) =>  B4(x, a, b, c)
     };
 
 let green_suffix_snoc:
   type a. (buffer(a, [ | `green]), a) => buffer(a, [ | `yellow]) =
   (buf, x) =>
     switch (buf) {
-    | [@implicit_arity] B2(a, b) => [@implicit_arity] B3(a, b, x)
-    | [@implicit_arity] B3(a, b, c) => [@implicit_arity] B4(a, b, c, x)
+    |  B2(a, b) =>  B3(a, b, x)
+    |  B3(a, b, c) =>  B4(a, b, c, x)
     };
 
 let yellow_prefix_cons: type a. (a, yellow_buffer(a)) => any_buffer(a) =
   (x, Yellowish(buf)) =>
     switch (buf) {
-    | B1(a) => Any([@implicit_arity] B2(x, a))
-    | [@implicit_arity] B2(a, b) => Any([@implicit_arity] B3(x, a, b))
-    | [@implicit_arity] B3(a, b, c) => Any([@implicit_arity] B4(x, a, b, c))
-    | [@implicit_arity] B4(a, b, c, d) =>
-      Any([@implicit_arity] B5(x, a, b, c, d))
+    | B1(a) => Any( B2(x, a))
+    |  B2(a, b) => Any( B3(x, a, b))
+    |  B3(a, b, c) => Any( B4(x, a, b, c))
+    |  B4(a, b, c, d) =>
+      Any( B5(x, a, b, c, d))
     };
 
 let yellow_suffix_snoc: type a. (yellow_buffer(a), a) => any_buffer(a) =
   (Yellowish(buf), x) =>
     switch (buf) {
-    | B1(a) => Any([@implicit_arity] B2(a, x))
-    | [@implicit_arity] B2(a, b) => Any([@implicit_arity] B3(a, b, x))
-    | [@implicit_arity] B3(a, b, c) => Any([@implicit_arity] B4(a, b, c, x))
-    | [@implicit_arity] B4(a, b, c, d) =>
-      Any([@implicit_arity] B5(a, b, c, d, x))
+    | B1(a) => Any( B2(a, x))
+    |  B2(a, b) => Any( B3(a, b, x))
+    |  B3(a, b, c) => Any( B4(a, b, c, x))
+    |  B4(a, b, c, d) =>
+      Any( B5(a, b, c, d, x))
     };
 
 let buffer_cons: type a c. (a, buffer(a, c)) => kont(a, [ | `green]) =
   (x, buf) =>
     switch (buf) {
     | B0 => Small(B1(x))
-    | B1(a) => Small([@implicit_arity] B2(x, a))
-    | [@implicit_arity] B2(a, b) => Small([@implicit_arity] B3(x, a, b))
-    | [@implicit_arity] B3(a, b, c) =>
-      Small([@implicit_arity] B4(x, a, b, c))
-    | [@implicit_arity] B4(a, b, c, d) =>
-      Small([@implicit_arity] B5(x, a, b, c, d))
-    | [@implicit_arity] B5(a, b, c, d, e) =>
-      [@implicit_arity]
+    | B1(a) => Small( B2(x, a))
+    |  B2(a, b) => Small( B3(x, a, b))
+    |  B3(a, b, c) =>
+      Small( B4(x, a, b, c))
+    |  B4(a, b, c, d) =>
+      Small( B5(x, a, b, c, d))
+    |  B5(a, b, c, d, e) =>
+
       G(
-        [@implicit_arity]
+
         Green(
-          [@implicit_arity] B3(x, a, b),
+           B3(x, a, b),
           HOLE,
-          [@implicit_arity] B3(c, d, e),
+           B3(c, d, e),
         ),
         Small(B0),
       )
@@ -108,20 +108,20 @@ let buffer_snoc: type a c. (buffer(a, c), a) => kont(a, [ | `green]) =
   (buf, x) =>
     switch (buf) {
     | B0 => Small(B1(x))
-    | B1(a) => Small([@implicit_arity] B2(a, x))
-    | [@implicit_arity] B2(a, b) => Small([@implicit_arity] B3(a, b, x))
-    | [@implicit_arity] B3(a, b, c) =>
-      Small([@implicit_arity] B4(a, b, c, x))
-    | [@implicit_arity] B4(a, b, c, d) =>
-      Small([@implicit_arity] B5(a, b, c, d, x))
-    | [@implicit_arity] B5(a, b, c, d, e) =>
-      [@implicit_arity]
+    | B1(a) => Small( B2(a, x))
+    |  B2(a, b) => Small( B3(a, b, x))
+    |  B3(a, b, c) =>
+      Small( B4(a, b, c, x))
+    |  B4(a, b, c, d) =>
+      Small( B5(a, b, c, d, x))
+    |  B5(a, b, c, d, e) =>
+
       G(
-        [@implicit_arity]
+
         Green(
-          [@implicit_arity] B3(a, b, c),
+           B3(a, b, c),
           HOLE,
-          [@implicit_arity] B3(d, e, x),
+           B3(d, e, x),
         ),
         Small(B0),
       )
@@ -129,17 +129,17 @@ let buffer_snoc: type a c. (buffer(a, c), a) => kont(a, [ | `green]) =
 
 let green_uncons: type a. buffer(a, [ | `green]) => (a, yellow_buffer(a)) =
   fun
-  | [@implicit_arity] B2(a, b) => (a, Yellowish(B1(b)))
-  | [@implicit_arity] B3(a, b, c) => (
+  |  B2(a, b) => (a, Yellowish(B1(b)))
+  |  B3(a, b, c) => (
       a,
-      Yellowish([@implicit_arity] B2(b, c)),
+      Yellowish( B2(b, c)),
     );
 
 let green_unsnoc: type a. buffer(a, [ | `green]) => (yellow_buffer(a), a) =
   fun
-  | [@implicit_arity] B2(a, b) => (Yellowish(B1(a)), b)
-  | [@implicit_arity] B3(a, b, c) => (
-      Yellowish([@implicit_arity] B2(a, b)),
+  |  B2(a, b) => (Yellowish(B1(a)), b)
+  |  B3(a, b, c) => (
+      Yellowish( B2(a, b)),
       c,
     );
 
@@ -147,11 +147,11 @@ let yellow_uncons: type a. yellow_buffer(a) => (a, any_buffer(a)) =
   (Yellowish(buf)) =>
     switch (buf) {
     | B1(a) => (a, Any(B0))
-    | [@implicit_arity] B2(a, b) => (a, Any(B1(b)))
-    | [@implicit_arity] B3(a, b, c) => (a, Any([@implicit_arity] B2(b, c)))
-    | [@implicit_arity] B4(a, b, c, d) => (
+    |  B2(a, b) => (a, Any(B1(b)))
+    |  B3(a, b, c) => (a, Any( B2(b, c)))
+    |  B4(a, b, c, d) => (
         a,
-        Any([@implicit_arity] B3(b, c, d)),
+        Any( B3(b, c, d)),
       )
     };
 
@@ -159,10 +159,10 @@ let yellow_unsnoc: type a. yellow_buffer(a) => (any_buffer(a), a) =
   (Yellowish(buf)) =>
     switch (buf) {
     | B1(a) => (Any(B0), a)
-    | [@implicit_arity] B2(a, b) => (Any(B1(a)), b)
-    | [@implicit_arity] B3(a, b, c) => (Any([@implicit_arity] B2(a, b)), c)
-    | [@implicit_arity] B4(a, b, c, d) => (
-        Any([@implicit_arity] B3(a, b, c)),
+    |  B2(a, b) => (Any(B1(a)), b)
+    |  B3(a, b, c) => (Any( B2(a, b)), c)
+    |  B4(a, b, c, d) => (
+        Any( B3(a, b, c)),
         d,
       )
     };
@@ -174,9 +174,9 @@ let buffer_uncons_unsafe: type a c. buffer(a, c) => (a, any_buffer(a)) =
   | B2(_) as buf => yellow_uncons(Yellowish(buf))
   | B3(_) as buf => yellow_uncons(Yellowish(buf))
   | B4(_) as buf => yellow_uncons(Yellowish(buf))
-  | [@implicit_arity] B5(a, b, c, d, e) => (
+  |  B5(a, b, c, d, e) => (
       a,
-      Any([@implicit_arity] B4(b, c, d, e)),
+      Any( B4(b, c, d, e)),
     );
 
 let buffer_unsnoc_unsafe: type a c. buffer(a, c) => (any_buffer(a), a) =
@@ -186,8 +186,8 @@ let buffer_unsnoc_unsafe: type a c. buffer(a, c) => (any_buffer(a), a) =
   | B2(_) as buf => yellow_unsnoc(Yellowish(buf))
   | B3(_) as buf => yellow_unsnoc(Yellowish(buf))
   | B4(_) as buf => yellow_unsnoc(Yellowish(buf))
-  | [@implicit_arity] B5(a, b, c, d, e) => (
-      Any([@implicit_arity] B4(a, b, c, d)),
+  |  B5(a, b, c, d, e) => (
+      Any( B4(a, b, c, d)),
       e,
     );
 
@@ -206,14 +206,14 @@ let prefix_rot: type a c. (a, buffer(a, c)) => (buffer(a, c), a) =
     switch (buf) {
     | B0 => (B0, x)
     | B1(a) => (B1(x), a)
-    | [@implicit_arity] B2(a, b) => ([@implicit_arity] B2(x, a), b)
-    | [@implicit_arity] B3(a, b, c) => ([@implicit_arity] B3(x, a, b), c)
-    | [@implicit_arity] B4(a, b, c, d) => (
-        [@implicit_arity] B4(x, a, b, c),
+    |  B2(a, b) => ( B2(x, a), b)
+    |  B3(a, b, c) => ( B3(x, a, b), c)
+    |  B4(a, b, c, d) => (
+         B4(x, a, b, c),
         d,
       )
-    | [@implicit_arity] B5(a, b, c, d, e) => (
-        [@implicit_arity] B5(x, a, b, c, d),
+    |  B5(a, b, c, d, e) => (
+         B5(x, a, b, c, d),
         e,
       )
     };
@@ -223,15 +223,15 @@ let suffix_rot: type a c. (buffer(a, c), a) => (a, buffer(a, c)) =
     switch (buf) {
     | B0 => (x, B0)
     | B1(a) => (a, B1(x))
-    | [@implicit_arity] B2(a, b) => (a, [@implicit_arity] B2(b, x))
-    | [@implicit_arity] B3(a, b, c) => (a, [@implicit_arity] B3(b, c, x))
-    | [@implicit_arity] B4(a, b, c, d) => (
+    |  B2(a, b) => (a,  B2(b, x))
+    |  B3(a, b, c) => (a,  B3(b, c, x))
+    |  B4(a, b, c, d) => (
         a,
-        [@implicit_arity] B4(b, c, d, x),
+         B4(b, c, d, x),
       )
-    | [@implicit_arity] B5(a, b, c, d, e) => (
+    |  B5(a, b, c, d, e) => (
         a,
-        [@implicit_arity] B5(b, c, d, e, x),
+         B5(b, c, d, e, x),
       )
     };
 
@@ -246,10 +246,10 @@ let prefix_decompose: type a c. buffer(a, c) => decompose(a) =
   | B1(x) => Underflow(Some(x))
   | B2(_) as b => Ok(b)
   | B3(_) as b => Ok(b)
-  | [@implicit_arity] B4(a, b, c, d) =>
-    [@implicit_arity] Overflow([@implicit_arity] B2(a, b), (c, d))
-  | [@implicit_arity] B5(a, b, c, d, e) =>
-    [@implicit_arity] Overflow([@implicit_arity] B3(a, b, c), (d, e));
+  |  B4(a, b, c, d) =>
+     Overflow( B2(a, b), (c, d))
+  |  B5(a, b, c, d, e) =>
+     Overflow( B3(a, b, c), (d, e));
 
 let suffix_decompose: type a c. buffer(a, c) => decompose(a) =
   fun
@@ -257,27 +257,27 @@ let suffix_decompose: type a c. buffer(a, c) => decompose(a) =
   | B1(x) => Underflow(Some(x))
   | B2(_) as b => Ok(b)
   | B3(_) as b => Ok(b)
-  | [@implicit_arity] B4(a, b, c, d) =>
-    [@implicit_arity] Overflow([@implicit_arity] B2(c, d), (a, b))
-  | [@implicit_arity] B5(a, b, c, d, e) =>
-    [@implicit_arity] Overflow([@implicit_arity] B3(c, d, e), (a, b));
+  |  B4(a, b, c, d) =>
+     Overflow( B2(c, d), (a, b))
+  |  B5(a, b, c, d, e) =>
+     Overflow( B3(c, d, e), (a, b));
 
 let prefix23 = (opt, (b, c)) =>
   switch (opt) {
-  | None => [@implicit_arity] B2(b, c)
-  | Some(a) => [@implicit_arity] B3(a, b, c)
+  | None =>  B2(b, c)
+  | Some(a) =>  B3(a, b, c)
   };
 
 let suffix23 = ((a, b), opt) =>
   switch (opt) {
-  | None => [@implicit_arity] B2(a, b)
-  | Some(c) => [@implicit_arity] B3(a, b, c)
+  | None =>  B2(a, b)
+  | Some(c) =>  B3(a, b, c)
   };
 
 let prefix12 = (x, opt) =>
   switch (opt) {
   | None => B1(x)
-  | Some(y) => [@implicit_arity] B2(x, y)
+  | Some(y) =>  B2(x, y)
   };
 
 let green_prefix_concat:
@@ -290,7 +290,7 @@ let green_prefix_concat:
     | Underflow(opt) =>
       let (ab, buf2) = green_uncons(buf2);
       (prefix23(opt, ab), buf2);
-    | [@implicit_arity] Overflow(buf1, ab) => (
+    |  Overflow(buf1, ab) => (
         buf1,
         Yellowish(green_prefix_cons(ab, buf2)),
       )
@@ -306,7 +306,7 @@ let green_suffix_concat:
     | Underflow(opt) =>
       let (buf1, ab) = green_unsnoc(buf1);
       (buf1, suffix23(ab, opt));
-    | [@implicit_arity] Overflow(buf2, ab) => (
+    |  Overflow(buf2, ab) => (
         Yellowish(green_suffix_snoc(buf1, ab)),
         buf2,
       )
@@ -320,7 +320,7 @@ let prefix_concat = (buf1, buf2) =>
   | Underflow(opt) =>
     let (ab, buf2) = yellow_uncons(buf2);
     (prefix23(opt, ab), buf2);
-  | [@implicit_arity] Overflow(buf1, ab) => (
+  |  Overflow(buf1, ab) => (
       buf1,
       yellow_prefix_cons(ab, buf2),
     )
@@ -334,7 +334,7 @@ let suffix_concat = (buf1, buf2) =>
   | Underflow(opt) =>
     let (buf1, ab) = yellow_unsnoc(buf1);
     (buf1, suffix23(ab, opt));
-  | [@implicit_arity] Overflow(buf2, ab) => (
+  |  Overflow(buf2, ab) => (
       yellow_suffix_snoc(buf1, ab),
       buf2,
     )
@@ -348,44 +348,44 @@ let buffer_unsandwich: type a c. buffer(a, c) => sandwich(a) =
   fun
   | B0 => Alone(None)
   | B1(a) => Alone(Some(a))
-  | [@implicit_arity] B2(a, b) => [@implicit_arity] Sandwich(a, B0, b)
-  | [@implicit_arity] B3(a, b, c) => [@implicit_arity] Sandwich(a, B1(b), c)
-  | [@implicit_arity] B4(a, b, c, d) =>
-    [@implicit_arity] Sandwich(a, [@implicit_arity] B2(b, c), d)
-  | [@implicit_arity] B5(a, b, c, d, e) =>
-    [@implicit_arity] Sandwich(a, [@implicit_arity] B3(b, c, d), e);
+  |  B2(a, b) =>  Sandwich(a, B0, b)
+  |  B3(a, b, c) =>  Sandwich(a, B1(b), c)
+  |  B4(a, b, c, d) =>
+     Sandwich(a,  B2(b, c), d)
+  |  B5(a, b, c, d, e) =>
+     Sandwich(a,  B3(b, c, d), e);
 
 let buffer_halve:
   type a c. buffer(a, c) => (option(a), any_buffer((a, a))) =
   fun
   | B0 => (None, Any(B0))
   | B1(a) => (Some(a), Any(B0))
-  | [@implicit_arity] B2(a, b) => (None, Any([@implicit_arity] B1(a, b)))
-  | [@implicit_arity] B3(a, b, c) => (
+  |  B2(a, b) => (None, Any( B1((a, b))))
+  |  B3(a, b, c) => (
       Some(a),
-      Any([@implicit_arity] B1(b, c)),
+      Any( B1((b, c))),
     )
-  | [@implicit_arity] B4(a, b, c, d) => (
+  |  B4(a, b, c, d) => (
       None,
-      Any([@implicit_arity] B2((a, b), (c, d))),
+      Any( B2((a, b), (c, d))),
     )
-  | [@implicit_arity] B5(a, b, c, d, e) => (
+  |  B5(a, b, c, d, e) => (
       Some(a),
-      Any([@implicit_arity] B2((b, c), (d, e))),
+      Any( B2((b, c), (d, e))),
     );
 
 let make_small = (prefix1, buf, suffix1) =>
   switch (prefix_decompose(prefix1), suffix_decompose(suffix1)) {
   | (Ok(p1), Ok(s1)) =>
-    [@implicit_arity] G([@implicit_arity] Green(p1, HOLE, s1), Small(buf))
+     G( Green(p1, HOLE, s1), Small(buf))
 
   | (Ok(p1), Underflow(opt)) =>
     switch (buffer_unsnoc(buf), opt) {
     | (None, None) => Small(p1)
     | (None, Some(x)) => buffer_snoc(p1, x)
     | (Some((Any(rest), cd)), _) =>
-      [@implicit_arity]
-      G([@implicit_arity] Green(p1, HOLE, suffix23(cd, opt)), Small(rest))
+
+      G( Green(p1, HOLE, suffix23(cd, opt)), Small(rest))
     }
 
   | (Underflow(opt), Ok(s1)) =>
@@ -393,16 +393,16 @@ let make_small = (prefix1, buf, suffix1) =>
     | (None, None) => Small(s1)
     | (None, Some(x)) => buffer_cons(x, s1)
     | (Some((cd, Any(rest))), _) =>
-      [@implicit_arity]
-      G([@implicit_arity] Green(prefix23(opt, cd), HOLE, s1), Small(rest))
+
+      G( Green(prefix23(opt, cd), HOLE, s1), Small(rest))
     }
 
   | (Underflow(p1), Underflow(s1)) =>
     switch (buffer_unsandwich(buf)) {
-    | [@implicit_arity] Sandwich(ab, rest, cd) =>
-      [@implicit_arity]
+    |  Sandwich(ab, rest, cd) =>
+
       G(
-        [@implicit_arity] Green(prefix23(p1, ab), HOLE, suffix23(cd, s1)),
+         Green(prefix23(p1, ab), HOLE, suffix23(cd, s1)),
         Small(rest),
       )
     | Alone(opt) =>
@@ -411,41 +411,41 @@ let make_small = (prefix1, buf, suffix1) =>
       | (Some(a), None, None)
       | (None, None, Some(a)) => Small(B1(a))
       | (Some(a), None, Some(b))
-      | (None, Some((a, b)), None) => Small([@implicit_arity] B2(a, b))
+      | (None, Some((a, b)), None) => Small( B2(a, b))
       | (Some(a), Some((b, c)), None)
       | (None, Some((a, b)), Some(c)) =>
-        Small([@implicit_arity] B3(a, b, c))
+        Small( B3(a, b, c))
       | (Some(a), Some((b, c)), Some(d)) =>
-        Small([@implicit_arity] B4(a, b, c, d))
+        Small( B4(a, b, c, d))
       }
     }
 
-  | ([@implicit_arity] Overflow(p1, ab), Ok(s1)) =>
+  | ( Overflow(p1, ab), Ok(s1)) =>
     let buf = buffer_cons(ab, buf);
-    [@implicit_arity] G([@implicit_arity] Green(p1, HOLE, s1), buf);
+     G( Green(p1, HOLE, s1), buf);
 
-  | (Ok(p1), [@implicit_arity] Overflow(s1, ab)) =>
+  | (Ok(p1),  Overflow(s1, ab)) =>
     let buf = buffer_snoc(buf, ab);
-    [@implicit_arity] G([@implicit_arity] Green(p1, HOLE, s1), buf);
+     G( Green(p1, HOLE, s1), buf);
 
-  | (Underflow(opt), [@implicit_arity] Overflow(s1, ab)) =>
+  | (Underflow(opt),  Overflow(s1, ab)) =>
     let (cd, center) = suffix_rot(buf, ab);
-    [@implicit_arity]
-    G([@implicit_arity] Green(prefix23(opt, cd), HOLE, s1), Small(center));
 
-  | ([@implicit_arity] Overflow(p1, ab), Underflow(opt)) =>
+    G( Green(prefix23(opt, cd), HOLE, s1), Small(center));
+
+  | ( Overflow(p1, ab), Underflow(opt)) =>
     let (center, cd) = prefix_rot(ab, buf);
-    [@implicit_arity]
-    G([@implicit_arity] Green(p1, HOLE, suffix23(cd, opt)), Small(center));
 
-  | ([@implicit_arity] Overflow(p1, ab), [@implicit_arity] Overflow(s1, cd)) =>
+    G( Green(p1, HOLE, suffix23(cd, opt)), Small(center));
+
+  | ( Overflow(p1, ab),  Overflow(s1, cd)) =>
     let (x, Any(rest)) = buffer_halve(buf);
-    [@implicit_arity]
+
     G(
-      [@implicit_arity]
+
       Green(
         p1,
-        [@implicit_arity] Yellow(prefix12(ab, x), HOLE, B1(cd)),
+         Yellow(prefix12(ab, x), HOLE, B1(cd)),
         s1,
       ),
       Small(rest),
@@ -454,32 +454,32 @@ let make_small = (prefix1, buf, suffix1) =>
 
 let green_of_red: type a. kont(a, [ | `red]) => kont(a, [ | `green]) =
   fun
-  | [@implicit_arity] R([@implicit_arity] Red(p1, HOLE, s1), Small(buf)) =>
+  |  R( Red(p1, HOLE, s1), Small(buf)) =>
     make_small(p1, buf, s1)
-  | [@implicit_arity]
+  |
     R(
-      [@implicit_arity] Red(p1, [@implicit_arity] Yellow(p2, child, s2), s1),
+       Red(p1,  Yellow(p2, child, s2), s1),
       kont,
     ) => {
       let (p1, Any(p2)) = prefix_concat(p1, Yellowish(p2));
       let (Any(s2), s1) = suffix_concat(Yellowish(s2), s1);
-      [@implicit_arity]
+
       G(
-        [@implicit_arity] Green(p1, HOLE, s1),
-        [@implicit_arity] R([@implicit_arity] Red(p2, child, s2), kont),
+         Green(p1, HOLE, s1),
+         R( Red(p2, child, s2), kont),
       );
     }
-  | [@implicit_arity]
+  |
     R(
-      [@implicit_arity] Red(p1, HOLE, s1),
-      [@implicit_arity] G([@implicit_arity] Green(p2, child, s2), kont),
+       Red(p1, HOLE, s1),
+       G( Green(p2, child, s2), kont),
     ) => {
       let (p1, Yellowish(p2)) = green_prefix_concat(p1, p2);
       let (Yellowish(s2), s1) = green_suffix_concat(s2, s1);
-      [@implicit_arity]
+
       G(
-        [@implicit_arity]
-        Green(p1, [@implicit_arity] Yellow(p2, child, s2), s1),
+
+        Green(p1,  Yellow(p2, child, s2), s1),
         kont,
       );
     };
@@ -492,15 +492,15 @@ let ensure_green:
   (Not_yellow, t) =>
     switch (t) {
     | Small(buf) => Small(buf)
-    | [@implicit_arity] G(x, k) => [@implicit_arity] G(x, k)
-    | [@implicit_arity] R(x, k) => green_of_red([@implicit_arity] R(x, k))
+    |  G(x, k) =>  G(x, k)
+    |  R(x, k) => green_of_red( R(x, k))
     };
 
 let yellow = (p1, child, s1, kont) =>
   T(
-    [@implicit_arity]
+
     Y(
-      [@implicit_arity] Yellow(p1, child, s1),
+       Yellow(p1, child, s1),
       ensure_green(Not_yellow, kont),
     ),
   );
@@ -508,17 +508,17 @@ let yellow = (p1, child, s1, kont) =>
 let red = (p1, child, s1, kont) =>
   T(
     green_of_red(
-      [@implicit_arity] R([@implicit_arity] Red(p1, child, s1), kont),
+       R( Red(p1, child, s1), kont),
     ),
   );
 
 let cons = (x, T(t)) =>
   switch (t) {
   | Small(buf) => T(buffer_cons(x, buf))
-  | [@implicit_arity] G([@implicit_arity] Green(p1, child, s1), kont) =>
+  |  G( Green(p1, child, s1), kont) =>
     let p1 = green_prefix_cons(x, p1);
     yellow(p1, child, s1, kont);
-  | [@implicit_arity] Y([@implicit_arity] Yellow(p1, child, s1), kont) =>
+  |  Y( Yellow(p1, child, s1), kont) =>
     let Any(p1) = yellow_prefix_cons(x, Yellowish(p1));
     red(p1, child, s1, kont);
   };
@@ -526,10 +526,10 @@ let cons = (x, T(t)) =>
 let snoc = (T(t), x) =>
   switch (t) {
   | Small(buf) => T(buffer_snoc(buf, x))
-  | [@implicit_arity] G([@implicit_arity] Green(p1, child, s1), kont) =>
+  |  G( Green(p1, child, s1), kont) =>
     let s1 = green_suffix_snoc(s1, x);
     yellow(p1, child, s1, kont);
-  | [@implicit_arity] Y([@implicit_arity] Yellow(p1, child, s1), kont) =>
+  |  Y( Yellow(p1, child, s1), kont) =>
     let Any(s1) = yellow_suffix_snoc(Yellowish(s1), x);
     red(p1, child, s1, kont);
   };
@@ -539,10 +539,10 @@ let uncons_unsafe = (T(t)) =>
   | Small(buf) =>
     let (x, Any(buf)) = buffer_uncons_unsafe(buf);
     (x, T(Small(buf)));
-  | [@implicit_arity] G([@implicit_arity] Green(p1, child, s1), kont) =>
+  |  G( Green(p1, child, s1), kont) =>
     let (x, Yellowish(p1)) = green_uncons(p1);
     (x, yellow(p1, child, s1, kont));
-  | [@implicit_arity] Y([@implicit_arity] Yellow(p1, child, s1), kont) =>
+  |  Y( Yellow(p1, child, s1), kont) =>
     let (x, Any(p1)) = yellow_uncons(Yellowish(p1));
     (x, red(p1, child, s1, kont));
   };
@@ -552,10 +552,10 @@ let unsnoc_unsafe = (T(t)) =>
   | Small(buf) =>
     let (Any(buf), x) = buffer_unsnoc_unsafe(buf);
     (T(Small(buf)), x);
-  | [@implicit_arity] G([@implicit_arity] Green(p1, child, s1), kont) =>
+  |  G( Green(p1, child, s1), kont) =>
     let (Yellowish(s1), x) = green_unsnoc(s1);
     (yellow(p1, child, s1, kont), x);
-  | [@implicit_arity] Y([@implicit_arity] Yellow(p1, child, s1), kont) =>
+  |  Y( Yellow(p1, child, s1), kont) =>
     let (Any(s1), x) = yellow_unsnoc(Yellowish(s1));
     (red(p1, child, s1, kont), x);
   };

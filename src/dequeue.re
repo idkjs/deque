@@ -8,10 +8,10 @@ module Base = {
           switch (buf) {
           | B0 => z
           | B1(a) => f(z, a)
-          | [@implicit_arity] B2(a, b) => f(f(z, a), b)
-          | [@implicit_arity] B3(a, b, c) => f(f(f(z, a), b), c)
-          | [@implicit_arity] B4(a, b, c, d) => f(f(f(f(z, a), b), c), d)
-          | [@implicit_arity] B5(a, b, c, d, e) =>
+          |  B2(a, b) => f(f(z, a), b)
+          |  B3(a, b, c) => f(f(f(z, a), b), c)
+          |  B4(a, b, c, d) => f(f(f(f(z, a), b), c), d)
+          |  B5(a, b, c, d, e) =>
             f(f(f(f(f(z, a), b), c), d), e)
           };
 
@@ -21,15 +21,15 @@ module Base = {
         (f, z, deq, kont) =>
           switch (deq) {
           | HOLE => go_kont(f, z, kont)
-          | [@implicit_arity] Yellow(prefix, child, suffix) =>
+          |  Yellow(prefix, child, suffix) =>
             let z = list_of_buffer(f, z, prefix);
             let z = go(go_pair(f), z, child, kont);
             list_of_buffer(f, z, suffix);
-          | [@implicit_arity] Green(prefix, child, suffix) =>
+          |  Green(prefix, child, suffix) =>
             let z = list_of_buffer(f, z, prefix);
             let z = go(go_pair(f), z, child, kont);
             list_of_buffer(f, z, suffix);
-          | [@implicit_arity] Red(prefix, child, suffix) =>
+          |  Red(prefix, child, suffix) =>
             let z = list_of_buffer(f, z, prefix);
             let z = go(go_pair(f), z, child, kont);
             list_of_buffer(f, z, suffix);
@@ -42,9 +42,9 @@ module Base = {
         (f, z, kont) =>
           switch (kont) {
           | Small(buf) => list_of_buffer(f, z, buf)
-          | [@implicit_arity] Y(child, kont) => go(f, z, child, kont)
-          | [@implicit_arity] R(child, kont) => go(f, z, child, kont)
-          | [@implicit_arity] G(child, kont) => go(f, z, child, kont)
+          |  Y(child, kont) => go(f, z, child, kont)
+          |  R(child, kont) => go(f, z, child, kont)
+          |  G(child, kont) => go(f, z, child, kont)
           };
 
       go_kont(f, z, t);
@@ -57,10 +57,10 @@ module Base = {
           switch (buf) {
           | B0 => z
           | B1(a) => f(a, z)
-          | [@implicit_arity] B2(a, b) => f(a, f(b, z))
-          | [@implicit_arity] B3(a, b, c) => f(a, f(b, f(c, z)))
-          | [@implicit_arity] B4(a, b, c, d) => f(a, f(b, f(c, f(d, z))))
-          | [@implicit_arity] B5(a, b, c, d, e) =>
+          |  B2(a, b) => f(a, f(b, z))
+          |  B3(a, b, c) => f(a, f(b, f(c, z)))
+          |  B4(a, b, c, d) => f(a, f(b, f(c, f(d, z))))
+          |  B5(a, b, c, d, e) =>
             f(a, f(b, f(c, f(d, f(e, z)))))
           };
 
@@ -70,15 +70,15 @@ module Base = {
         (f, deq, z, kont) =>
           switch (deq) {
           | HOLE => go_kont(f, kont, z)
-          | [@implicit_arity] Yellow(prefix, child, suffix) =>
+          |  Yellow(prefix, child, suffix) =>
             let z = list_of_buffer(f, suffix, z);
             let z = go(go_pair(f), child, z, kont);
             list_of_buffer(f, prefix, z);
-          | [@implicit_arity] Green(prefix, child, suffix) =>
+          |  Green(prefix, child, suffix) =>
             let z = list_of_buffer(f, suffix, z);
             let z = go(go_pair(f), child, z, kont);
             list_of_buffer(f, prefix, z);
-          | [@implicit_arity] Red(prefix, child, suffix) =>
+          |  Red(prefix, child, suffix) =>
             let z = list_of_buffer(f, suffix, z);
             let z = go(go_pair(f), child, z, kont);
             list_of_buffer(f, prefix, z);
@@ -91,9 +91,9 @@ module Base = {
         (f, kont, z) =>
           switch (kont) {
           | Small(buf) => list_of_buffer(f, buf, z)
-          | [@implicit_arity] Y(child, kont) => go(f, child, z, kont)
-          | [@implicit_arity] R(child, kont) => go(f, child, z, kont)
-          | [@implicit_arity] G(child, kont) => go(f, child, z, kont)
+          |  Y(child, kont) => go(f, child, z, kont)
+          |  R(child, kont) => go(f, child, z, kont)
+          |  G(child, kont) => go(f, child, z, kont)
           };
 
       go_kont(f, t, z);
@@ -143,20 +143,20 @@ let nth: type a. (s(a), int, int) => a =
         fun
         | B0 => assert(false)
         | B1(a) => search(i, s, a)
-        | [@implicit_arity] B2(a, b) =>
+        |  B2(a, b) =>
           if (i < s) {
             search(i, s, a);
           } else {
             search(i - s, s, b);
           }
-        | [@implicit_arity] B3(a, b, c) =>
+        |  B3(a, b, c) =>
           switch (i / s) {
           | 0 => search(i, s, a)
           | 1 => search(i - s, s, b)
           | 2 => search(i - 2 * s, s, c)
           | _ => assert(false)
           }
-        | [@implicit_arity] B4(a, b, c, d) =>
+        |  B4(a, b, c, d) =>
           switch (i / s) {
           | 0 => search(i, s, a)
           | 1 => search(i - s, s, b)
@@ -164,7 +164,7 @@ let nth: type a. (s(a), int, int) => a =
           | 3 => search(i - 3 * s, s, d)
           | _ => assert(false)
           }
-        | [@implicit_arity] B5(a, b, c, d, e) =>
+        |  B5(a, b, c, d, e) =>
           switch (i / s) {
           | 0 => search(i, s, a)
           | 1 => search(i - s, s, b)
@@ -188,11 +188,11 @@ let nth: type a. (s(a), int, int) => a =
       (i, j, s, search, deq, kont) =>
         switch (deq) {
         | HOLE => go_kont(i, j, s, search, kont)
-        | [@implicit_arity] Yellow(prefix, child, suffix) =>
+        |  Yellow(prefix, child, suffix) =>
           go_level(i, j, s, search, prefix, suffix, child, kont)
-        | [@implicit_arity] Green(prefix, child, suffix) =>
+        |  Green(prefix, child, suffix) =>
           go_level(i, j, s, search, prefix, suffix, child, kont)
-        | [@implicit_arity] Red(prefix, child, suffix) =>
+        |  Red(prefix, child, suffix) =>
           go_level(i, j, s, search, prefix, suffix, child, kont)
         }
 
@@ -237,11 +237,11 @@ let nth: type a. (s(a), int, int) => a =
       (i, j, s, search) =>
         fun
         | Small(buf) => buffer(i, s, search, buf)
-        | [@implicit_arity] Y(child, kont) =>
+        |  Y(child, kont) =>
           go(i, j, s, search, child, kont)
-        | [@implicit_arity] R(child, kont) =>
+        |  R(child, kont) =>
           go(i, j, s, search, child, kont)
-        | [@implicit_arity] G(child, kont) =>
+        |  G(child, kont) =>
           go(i, j, s, search, child, kont);
 
     let search1: (int, int, a) => a = ((_, _, x) => x: (int, int, a) => a);
@@ -274,22 +274,22 @@ let rec make: type a. (int, a) => kont(a, [ | `green]) =
     switch (n) {
     | 0 => Small(B0)
     | 1 => Small(B1(x))
-    | 2 => Small([@implicit_arity] B2(x, x))
-    | 3 => Small([@implicit_arity] B3(x, x, x))
+    | 2 => Small( B2(x, x))
+    | 3 => Small( B3(x, x, x))
     | _ =>
       let n = n - 4;
       switch (n mod 2) {
       | 0 =>
-        let b = [@implicit_arity] B2(x, x);
+        let b =  B2(x, x);
         let x2 = (x, x);
-        [@implicit_arity]
-        G([@implicit_arity] Green(b, HOLE, b), make(n / 2, x2));
+
+        G( Green(b, HOLE, b), make(n / 2, x2));
       | 1 =>
-        let p = [@implicit_arity] B3(x, x, x);
-        let s = [@implicit_arity] B2(x, x);
+        let p =  B3(x, x, x);
+        let s =  B2(x, x);
         let x2 = (x, x);
-        [@implicit_arity]
-        G([@implicit_arity] Green(p, HOLE, s), make((n - 1) / 2, x2));
+
+        G( Green(p, HOLE, s), make((n - 1) / 2, x2));
       | _ => assert(false)
       };
     };
@@ -300,20 +300,20 @@ let rec of_list: type a. list(a) => kont(a, [ | `green]) =
   fun
   | [] => Small(B0)
   | [a] => Small(B1(a))
-  | [a, b] => Small([@implicit_arity] B2(a, b))
-  | [a, b, c] => Small([@implicit_arity] B3(a, b, c))
+  | [a, b] => Small( B2(a, b))
+  | [a, b, c] => Small( B3(a, b, c))
   | [a, b, c, d, ...lst] => {
-      let p = [@implicit_arity] B2(a, b);
+      let p =  B2(a, b);
       let rec go = acc => (
         fun
-        | (c, d, []) => (acc, [@implicit_arity] B2(c, d))
-        | (c, d, [e]) => (acc, [@implicit_arity] B3(c, d, e))
+        | (c, d, []) => (acc,  B2(c, d))
+        | (c, d, [e]) => (acc,  B3(c, d, e))
         | (c, d, [e, f, ...xs]) => go([(c, d), ...acc], (e, f, xs))
       );
 
       let (lst, s) = go([], (c, d, lst));
-      [@implicit_arity]
-      G([@implicit_arity] Green(p, HOLE, s), of_list(List.rev(lst)));
+
+      G( Green(p, HOLE, s), of_list(List.rev(lst)));
     };
 
 let of_list = lst => {length: List.length(lst), s: T(of_list(lst))};

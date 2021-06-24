@@ -232,7 +232,7 @@ module Test = (D: (module type of Deque.Dequeue)) => {
       () => {
         let (lst, deq) = make();
         let (f, g, check) = make_fs();
-        let acc = (f, z, x) => [@implicit_arity] F(z, X(f(x)));
+        let acc = (f, z, x) =>  F(z, X(f(x)));
         let x = List.fold_left(acc(f), Z, lst);
         let y = D.fold_left(acc(g), Z, deq);
         assert(x == y);
@@ -250,7 +250,7 @@ module Test = (D: (module type of Deque.Dequeue)) => {
         let (lst0, deq0) = make();
         let (lst1, deq1) = make();
         let (f, g, check) = make_fs();
-        let acc = (f, z, x, y) => [@implicit_arity] F(z, X(f((x, y))));
+        let acc = (f, z, x, y) =>  F(z, X(f((x, y))));
         let x = List.fold_left2(acc(f), Z, lst0, lst1);
         let y = D.fold_left2(acc(g), Z, deq0, deq1);
         assert(x == y);
@@ -264,7 +264,7 @@ module Test = (D: (module type of Deque.Dequeue)) => {
       () => {
         let (lst, deq) = make();
         let (f, g, check) = make_fs();
-        let acc = (f, x, z) => [@implicit_arity] F(X(f(x)), z);
+        let acc = (f, x, z) =>  F(X(f(x)), z);
         let x = List.fold_right(acc(f), lst, Z);
         let y = D.fold_right(acc(g), deq, Z);
         assert(x == y);
@@ -874,11 +874,11 @@ let () = header("Steque");
 module Test_steque =
   Test({
     include Deque.Steque;
-    let unsnoc = t =>
+    let unsnoc = t =>{
       switch (uncons(rev(t))) {
       | None => None
       | Some((x, t)) => Some((rev(t), x))
-      };
+      }};
   });
 let () = Printf.printf("\n%!");
 

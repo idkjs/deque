@@ -6,30 +6,30 @@ type m('a) =
   | Bind(m('a), 'a => m('b)): m('b)
   | Delay(unit => m('a)): m('a);
 
-let (@) = (a, b) => [@implicit_arity] Interleave(a, b);
-let return = x => [@implicit_arity] Yield(x, () => Done);
-let (>>=) = (m, f) => [@implicit_arity] Bind(m, f);
-let map = (f, m) => [@implicit_arity] Bind(m, x => return(f(x)));
+let (@) = (a, b) =>  Interleave(a, b);
+let return = x =>  Yield(x, () => Done);
+let (>>=) = (m, f) =>  Bind(m, f);
+let map = (f, m) =>  Bind(m, x => return(f(x)));
 let (<$>) = (f, x) => map(f, x);
 let (<*>) = (f, x) => f >>= (f => map(f, x));
 
 let rec of_list = lst =>
   switch (lst) {
   | [] => Done
-  | [x, ...xs] => [@implicit_arity] Yield(x, () => of_list(xs))
+  | [x, ...xs] =>  Yield(x, () => of_list(xs))
   };
 
 let rec force1: type a. m(a) => option(a) =
   fun
   | Done => None
-  | [@implicit_arity] Yield(x, _) => Some(x)
+  |  Yield(x, _) => Some(x)
   | Delay(m) => force1(m())
-  | [@implicit_arity] Interleave(a, b) =>
+  |  Interleave(a, b) =>
     switch (force1(a)) {
     | None => force1(b)
     | Some(x) => Some(x)
     }
-  | [@implicit_arity] Bind(m, f) =>
+  |  Bind(m, f) =>
     switch (force1(m)) {
     | None => None
     | Some(x) => force1(f(x))
@@ -40,11 +40,11 @@ let rec iteri: type a. (int, (int, a) => int, int, m(a)) => int =
   (count, f, d, xs) =>
     switch (xs) {
     | Done => count
-    | [@implicit_arity] Yield(x, xs) =>
+    |  Yield(x, xs) =>
       let count = f(count, x);
       iteri(count + 1, f, d, xs());
     | Delay(m) => iteri(count, f, d, m())
-    | [@implicit_arity] Interleave(a, b) =>
+    |  Interleave(a, b) =>
       let (a, b) =
         if (Random.bool()) {
           (a, b);
@@ -53,7 +53,7 @@ let rec iteri: type a. (int, (int, a) => int, int, m(a)) => int =
         };
       let count = iteri(count, f, d, a);
       iteri(count, f, d, b);
-    | [@implicit_arity] Bind(m, g) =>
+    |  Bind(m, g) =>
       iteri(count, (count, x) => iteri(count, f, d, g(x)), d, m)
     | Nest(m) =>
       if (d <= 0) {
@@ -140,7 +140,7 @@ let rec stored_triple: type a. m(a) => m(stored_triple(a)) =
                 >>= (
                   (S(c)) =>
                     buffer_ge3(e)
-                    >>= (s => return([@implicit_arity] Stored(p, c, s)))
+                    >>= (s => return( Stored(p, c, s)))
                 )
             )
           )
@@ -158,7 +158,7 @@ let rec stored_triple: type a. m(a) => m(stored_triple(a)) =
                 >>= (
                   (S(c)) =>
                     buffer_ge3(e)
-                    >>= (s => return([@implicit_arity] Stored(p, c, s)))
+                    >>= (s => return( Stored(p, c, s)))
                 )
             )
           ),
@@ -179,7 +179,7 @@ and only_green:
               >>= (
                 (GR_deq(c)) =>
                   buffer_ge8(e)
-                  >>= (s => return([@implicit_arity] Only_green(p, c, s)))
+                  >>= (s => return( Only_green(p, c, s)))
               )
           )
         ),
@@ -196,7 +196,7 @@ and only_red: type a. m(a) => m(triple(a, a, [ | `red], only, nh, nh, nh)) =
             >>= (
               (G_deq(c)) =>
                 buffer_ge5(e)
-                >>= (s => return([@implicit_arity] Only_red(p, c, s)))
+                >>= (s => return( Only_red(p, c, s)))
             )
         ),
     )
@@ -205,20 +205,20 @@ and only_yellow_green: type a. m(a) => m(path(a, [ | `green], only)) =
   e =>
     Nest(
       () =>
-        (only_green(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (only_green(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_ge7(e)
           >>= (
             p =>
               not_empty_left_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge7(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Only_yellow(p, c, s), k),
+
+                        Path( Only_yellow(p, c, s), k),
                       )
                   )
               )
@@ -230,13 +230,13 @@ and only_yellow_green: type a. m(a) => m(path(a, [ | `green], only)) =
             p =>
               not_empty_right_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge6(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Only_orange(p, c, s), k),
+
+                        Path( Only_orange(p, c, s), k),
                       )
                   )
               )
@@ -248,20 +248,20 @@ and only_yellow_red: type a. m(a) => m(path(a, [ | `red], only)) =
   e =>
     Nest(
       () =>
-        (only_red(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (only_red(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_ge7(e)
           >>= (
             p =>
               not_empty_left_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge7(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Only_yellow(p, c, s), k),
+
+                        Path( Only_yellow(p, c, s), k),
                       )
                   )
               )
@@ -273,13 +273,13 @@ and only_yellow_red: type a. m(a) => m(path(a, [ | `red], only)) =
             p =>
               not_empty_right_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge6(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Only_orange(p, c, s), k),
+
+                        Path( Only_orange(p, c, s), k),
                       )
                   )
               )
@@ -291,20 +291,20 @@ and left_yellow_green: type a. m(a) => m(path(a, [ | `green], left)) =
   e =>
     Nest(
       () =>
-        (left_green(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (left_green(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_ge7(e)
           >>= (
             p =>
               not_empty_left_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_eq2(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Left_yellow(p, c, s), k),
+
+                        Path( Left_yellow(p, c, s), k),
                       )
                   )
               )
@@ -316,13 +316,13 @@ and left_yellow_green: type a. m(a) => m(path(a, [ | `green], left)) =
             p =>
               not_empty_right_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_eq2(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Left_orange(p, c, s), k),
+
+                        Path( Left_orange(p, c, s), k),
                       )
                   )
               )
@@ -334,20 +334,20 @@ and right_yellow_green: type a. m(a) => m(path(a, [ | `green], right)) =
   e =>
     Nest(
       () =>
-        (right_green(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (right_green(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_eq2(e)
           >>= (
             p =>
               not_empty_left_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge7(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Right_yellow(p, c, s), k),
+
+                        Path( Right_yellow(p, c, s), k),
                       )
                   )
               )
@@ -359,13 +359,13 @@ and right_yellow_green: type a. m(a) => m(path(a, [ | `green], right)) =
             p =>
               not_empty_right_green(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge6(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Right_orange(p, c, s), k),
+
+                        Path( Right_orange(p, c, s), k),
                       )
                   )
               )
@@ -377,20 +377,20 @@ and left_yellow_red: type a. m(a) => m(path(a, [ | `red], left)) =
   e =>
     Nest(
       () =>
-        (left_red(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (left_red(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_ge7(e)
           >>= (
             p =>
               not_empty_left_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_eq2(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Left_yellow(p, c, s), k),
+
+                        Path( Left_yellow(p, c, s), k),
                       )
                   )
               )
@@ -402,13 +402,13 @@ and left_yellow_red: type a. m(a) => m(path(a, [ | `red], left)) =
             p =>
               not_empty_right_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_eq2(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Left_orange(p, c, s), k),
+
+                        Path( Left_orange(p, c, s), k),
                       )
                   )
               )
@@ -420,20 +420,20 @@ and right_yellow_red: type a. m(a) => m(path(a, [ | `red], right)) =
   e =>
     Nest(
       () =>
-        (right_red(e) >>= (k => return([@implicit_arity] Path(HOLE, k))))
+        (right_red(e) >>= (k => return( Path(HOLE, k))))
         @ (
           buffer_eq2(e)
           >>= (
             p =>
               not_empty_left_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge7(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Right_yellow(p, c, s), k),
+
+                        Path( Right_yellow(p, c, s), k),
                       )
                   )
               )
@@ -445,13 +445,13 @@ and right_yellow_red: type a. m(a) => m(path(a, [ | `red], right)) =
             p =>
               not_empty_right_red(stored_triple(e))
               >>= (
-                ([@implicit_arity] Holy(c, k)) =>
+                ( Holy(c, k)) =>
                   buffer_ge6(e)
                   >>= (
                     s =>
                       return(
-                        [@implicit_arity]
-                        Path([@implicit_arity] Right_orange(p, c, s), k),
+
+                        Path( Right_orange(p, c, s), k),
                       )
                   )
               )
@@ -467,13 +467,13 @@ and not_empty_left_red:
         (
           left_yellow_red(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
+            ( Path(y, k)) =>
               gr_path_right(e)
               >>= (
                 (GR_path(right)) =>
                   return(
-                    [@implicit_arity]
-                    Holy([@implicit_arity] Pair_left(y, right), k),
+
+                    Holy( Pair_left(y, right), k),
                   )
               )
           )
@@ -481,8 +481,8 @@ and not_empty_left_red:
         @ (
           only_yellow_red(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return([@implicit_arity] Holy(Only_of(y), k))
+            ( Path(y, k)) =>
+              return( Holy(Only_of(y), k))
           )
         ),
     )
@@ -498,10 +498,10 @@ and not_empty_right_red:
             (G_path(left)) =>
               right_yellow_red(e)
               >>= (
-                ([@implicit_arity] Path(y, k)) =>
+                ( Path(y, k)) =>
                   return(
-                    [@implicit_arity]
-                    Holy([@implicit_arity] Pair_right(left, y), k),
+
+                    Holy( Pair_right(left, y), k),
                   )
               )
           )
@@ -509,8 +509,8 @@ and not_empty_right_red:
         @ (
           only_yellow_red(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return([@implicit_arity] Holy(Only_of(y), k))
+            ( Path(y, k)) =>
+              return( Holy(Only_of(y), k))
           )
         ),
     )
@@ -523,20 +523,20 @@ and not_empty_left_green:
         (
           only_yellow_green(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return([@implicit_arity] Holy(Only_of(y), k))
+            ( Path(y, k)) =>
+              return( Holy(Only_of(y), k))
           )
         )
         @ (
           left_yellow_green(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
+            ( Path(y, k)) =>
               gr_path_right(e)
               >>= (
                 (GR_path(right)) =>
                   return(
-                    [@implicit_arity]
-                    Holy([@implicit_arity] Pair_left(y, right), k),
+
+                    Holy( Pair_left(y, right), k),
                   )
               )
           )
@@ -551,8 +551,8 @@ and not_empty_right_green:
         (
           only_yellow_green(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return([@implicit_arity] Holy(Only_of(y), k))
+            ( Path(y, k)) =>
+              return( Holy(Only_of(y), k))
           )
         )
         @ (
@@ -561,10 +561,10 @@ and not_empty_right_green:
             (G_path(left)) =>
               right_yellow_green(e)
               >>= (
-                ([@implicit_arity] Path(y, k)) =>
+                ( Path(y, k)) =>
                   return(
-                    [@implicit_arity]
-                    Holy([@implicit_arity] Pair_right(left, y), k),
+
+                    Holy( Pair_right(left, y), k),
                   )
               )
           )
@@ -581,7 +581,7 @@ and left_green:
           >>= (
             p =>
               buffer_eq2(e)
-              >>= (s => return([@implicit_arity] Left_small(p, s)))
+              >>= (s => return( Left_small(p, s)))
           )
         )
         @ (
@@ -592,7 +592,7 @@ and left_green:
               >>= (
                 (GR_deq(c)) =>
                   buffer_eq2(e)
-                  >>= (s => return([@implicit_arity] Left_green(p, c, s)))
+                  >>= (s => return( Left_green(p, c, s)))
               )
           )
         ),
@@ -609,7 +609,7 @@ and left_red: type a. m(a) => m(triple(a, a, [ | `red], left, nh, nh, nh)) =
             >>= (
               (G_deq(c)) =>
                 buffer_eq2(e)
-                >>= (s => return([@implicit_arity] Left_red(p, c, s)))
+                >>= (s => return( Left_red(p, c, s)))
             )
         ),
     )
@@ -624,7 +624,7 @@ and right_green:
           >>= (
             p =>
               buffer_ge5(e)
-              >>= (s => return([@implicit_arity] Right_small(p, s)))
+              >>= (s => return( Right_small(p, s)))
           )
         )
         @ (
@@ -635,7 +635,7 @@ and right_green:
               >>= (
                 (GR_deq(c)) =>
                   buffer_ge8(e)
-                  >>= (s => return([@implicit_arity] Right_green(p, c, s)))
+                  >>= (s => return( Right_green(p, c, s)))
               )
           )
         ),
@@ -652,7 +652,7 @@ and right_red: type a. m(a) => m(triple(a, a, [ | `red], right, nh, nh, nh)) =
             >>= (
               (G_deq(c)) =>
                 buffer_ge5(e)
-                >>= (s => return([@implicit_arity] Right_red(p, c, s)))
+                >>= (s => return( Right_red(p, c, s)))
             )
         ),
     )
@@ -669,7 +669,7 @@ and g_deque: type a. m(a) => m(g_deque(a)) =
               g_path_right(e)
               >>= (
                 (G_path(right)) =>
-                  return(G_deq([@implicit_arity] Pair_red(left, right)))
+                  return(G_deq( Pair_red(left, right)))
               )
           )
         ),
@@ -686,7 +686,7 @@ and gr_deque: type a. m(a) => m(gr_deque(a)) =
               gr_path_right(e)
               >>= (
                 (GR_path(right)) =>
-                  return(GR_deq([@implicit_arity] Pair_green(left, right)))
+                  return(GR_deq( Pair_green(left, right)))
               )
           )
         )
@@ -697,7 +697,7 @@ and gr_deque: type a. m(a) => m(gr_deque(a)) =
               g_path_right(e)
               >>= (
                 (G_path(right)) =>
-                  return(GR_deq([@implicit_arity] Pair_red(left, right)))
+                  return(GR_deq( Pair_red(left, right)))
               )
           )
         )
@@ -714,15 +714,15 @@ and gr_path_only: type a. m(a) => m(gr_path(a, only)) =
         (
           only_yellow_red(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return(GR_path([@implicit_arity] Path(y, k)))
+            ( Path(y, k)) =>
+              return(GR_path( Path(y, k)))
           )
         )
         @ (
           only_yellow_green(e)
           >>= (
-            ([@implicit_arity] Path(y, k)) =>
-              return(GR_path([@implicit_arity] Path(y, k)))
+            ( Path(y, k)) =>
+              return(GR_path( Path(y, k)))
           )
         ),
     )

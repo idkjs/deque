@@ -7,9 +7,9 @@ let fold_left: type a z. ((z, a) => z, z, t(a)) => z =
     let fold_prefix: type b c. ((z, b) => z, z, prefix(b, c)) => z =
       (f, z, p) =>
         switch (p) {
-        | [@implicit_arity] P2(a, b) => f(f(z, a), b)
-        | [@implicit_arity] P3(a, b, c) => f(f(f(z, a), b), c)
-        | [@implicit_arity] P4(a, b, c, d, deq) =>
+        |  P2(a, b) => f(f(z, a), b)
+        |  P3(a, b, c) => f(f(f(z, a), b), c)
+        |  P4(a, b, c, d, deq) =>
           let z = f(f(f(f(z, a), b), c), d);
           Dequeue.fold_left(f, z, deq);
         };
@@ -22,14 +22,14 @@ let fold_left: type a z. ((z, a) => z, z, t(a)) => z =
       (f, z, steque, kont) =>
         switch (steque) {
         | KONT => go_kont(f, z, kont)
-        | [@implicit_arity] Triple(p, c, s) =>
+        |  Triple(p, c, s) =>
           let z = fold_prefix(f, z, p);
           let z = go(go_pair(f), z, c, kont);
           list_of_suffix(f, z, s);
         }
 
     and go_pair: type b. ((z, b) => z, z, pair(b)) => z =
-      (f, z, [@implicit_arity] Pair(p, k)) => {
+      (f, z,  Pair(p, k)) => {
         let z = fold_prefix(f, z, p);
         go_kont(go_pair(f), z, k);
       }
@@ -38,10 +38,10 @@ let fold_left: type a z. ((z, a) => z, z, t(a)) => z =
       (f, z, kont) =>
         switch (kont) {
         | Suffix(s) => list_of_suffix(f, z, s)
-        | [@implicit_arity] Y(c, k) => go(f, z, c, k)
-        | [@implicit_arity] Yr(c, k) => go(f, z, c, k)
-        | [@implicit_arity] R(c, k) => go(f, z, c, k)
-        | [@implicit_arity] G(c, k) => go(f, z, c, k)
+        |  Y(c, k) => go(f, z, c, k)
+        |  Yr(c, k) => go(f, z, c, k)
+        |  R(c, k) => go(f, z, c, k)
+        |  G(c, k) => go(f, z, c, k)
         };
 
     go_kont(f, z, t);
@@ -52,9 +52,9 @@ let fold_right: type a z. ((a, z) => z, t(a), z) => z =
     let fold_prefix: type b c. ((b, z) => z, prefix(b, c), z) => z =
       (f, p, z) =>
         switch (p) {
-        | [@implicit_arity] P2(a, b) => f(a, f(b, z))
-        | [@implicit_arity] P3(a, b, c) => f(a, f(b, f(c, z)))
-        | [@implicit_arity] P4(a, b, c, d, deq) =>
+        |  P2(a, b) => f(a, f(b, z))
+        |  P3(a, b, c) => f(a, f(b, f(c, z)))
+        |  P4(a, b, c, d, deq) =>
           let z = Dequeue.fold_right(f, deq, z);
           f(a, f(b, f(c, f(d, z))));
         };
@@ -67,14 +67,14 @@ let fold_right: type a z. ((a, z) => z, t(a), z) => z =
       (f, steque, z, kont) =>
         switch (steque) {
         | KONT => go_kont(f, kont, z)
-        | [@implicit_arity] Triple(p, c, s) =>
+        |  Triple(p, c, s) =>
           let z = list_of_suffix(f, s, z);
           let z = go(go_pair(f), c, z, kont);
           fold_prefix(f, p, z);
         }
 
     and go_pair: type b. ((b, z) => z, pair(b), z) => z =
-      (f, [@implicit_arity] Pair(p, k), z) => {
+      (f,  Pair(p, k), z) => {
         let z = go_kont(go_pair(f), k, z);
         fold_prefix(f, p, z);
       }
@@ -83,10 +83,10 @@ let fold_right: type a z. ((a, z) => z, t(a), z) => z =
       (f, kont, z) =>
         switch (kont) {
         | Suffix(s) => list_of_suffix(f, s, z)
-        | [@implicit_arity] Y(c, k) => go(f, c, z, k)
-        | [@implicit_arity] Yr(c, k) => go(f, c, z, k)
-        | [@implicit_arity] R(c, k) => go(f, c, z, k)
-        | [@implicit_arity] G(c, k) => go(f, c, z, k)
+        |  Y(c, k) => go(f, c, z, k)
+        |  Yr(c, k) => go(f, c, z, k)
+        |  R(c, k) => go(f, c, z, k)
+        |  G(c, k) => go(f, c, z, k)
         };
 
     go_kont(f, t, z);
