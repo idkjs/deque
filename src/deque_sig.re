@@ -1,7 +1,7 @@
 module type S = {
-  /**/**/;
+
   type t('a);
-  /**/**/;
+
 
   /** {1 List} */;
 

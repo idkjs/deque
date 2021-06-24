@@ -39,7 +39,7 @@ let rev: t('a) => t('a);
 
 let length: t('a) => int;
 
-/**/**/;
+
 
 let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
 

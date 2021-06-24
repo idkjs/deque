@@ -1,13 +1,13 @@
 {
-  "name": "reason-rollup-template",
+  "name": "reason-deque",
   "version": "0.1.0",
    "sources": [
     {
-      "dir": "src/sort",
+      "dir": "src",
       "subdirs": true
     },
     {
-      "dir": "__tests__",
+      "dir": "tests",
       "type": "dev"
     }
   ],
